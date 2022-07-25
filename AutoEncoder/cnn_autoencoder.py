@@ -32,10 +32,10 @@ x_test_noisy = tf.clip_by_value(x_test_noisy, clip_value_min=0., clip_value_max=
 n = 10
 plt.figure(figsize=(20, 2))
 for i in range(n):
-    ax = plt.subplot(1, n, i + n)
+    ax = plt.subplot(1, n, i + 1)
     plt.title("original + noise")
     plt.imshow(tf.squeeze(x_test_noisy[i]))
-    plt.gry()
+    plt.gray()
 plt.show()
 
 #%% 모델 정의
@@ -62,7 +62,7 @@ class Denoise(Model):
 autoencoder = Denoise()
 
 #%% 모델 초기화
-autoencoder.compile(optimizer='adam', loss=losses.MeanSquredError())
+autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
 
 #%% 모델 학습
 autoencoder.fit(x_train_noisy, x_train,
@@ -76,5 +76,25 @@ autoencoder.encoder.summary()
 #%% decoder를 통한 업샘플링
 autoencoder.decoder.summary()
 
-#%% 테스트
-encoded_imgs = autoencder.encoder(x_test).numpy()
+#%% 테스트 결과
+encoded_imgs = autoencoder.encoder(x_test).numpy()
+decoded_imgs = autoencoder.decoder(encoded_imgs).numpy()
+
+#%% 테스트 결과 시각화
+n = 10
+plt.figure(figsize=(20, 4))
+for i in range(n):
+    ax = plt.subplot(2, n, i+1)
+    plt.title("original + noise")
+    plt.imshow(tf.squeeze(x_test_noisy[i]))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    
+    bx = plt.subplot(2, n, i + n + 1)
+    plt.title("reconstructed")
+    plt.imshow(tf.squeeze(decoded_imgs[i]))
+    plt.gray()
+    bx.get_xaxis().set_visible(False)
+    bx.get_yaxis().set_visible(False)
+plt.show()
