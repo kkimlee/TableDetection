@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers, losses
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.models import Model
+from tensorflow import keras
 
 import cv2
 import os
@@ -92,6 +93,9 @@ autoencoder = Autoencoder()
 #%% 모델 초기화
 autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
 
+#%%
+keras.utils.plot_model(autoencoder.encoder)
+plt.show()
 #%% 모델 학습
 autoencoder.fit(x_train, y_train,
                 validation_data = (x_test, y_test),
@@ -102,6 +106,9 @@ autoencoder.fit(x_train, y_train,
 #%%
 autoencoder.encoder.summary()
 autoencoder.decoder.summary()
+
+#%%
+
 
 #%%
 autoencoder.encoder.save('encoder.h5')
@@ -131,5 +138,8 @@ for i in range(n):
 plt.show()
 
 #%%
-cv2.imshow('result', decoded_imgs[0])
+cv2.imshow('result', decoded_imgs[4])
+cv2.waitKey(0)
+
+cv2.imshow('result2', x_test[4])
 cv2.waitKey(0)
