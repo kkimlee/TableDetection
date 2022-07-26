@@ -1,2 +1,1 @@
-data/train/input/*.bmp
-data/train/output/*.bmp
+data/
