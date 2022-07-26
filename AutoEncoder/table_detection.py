@@ -24,8 +24,8 @@ y_train = [cv2.imread(os.path.join(y_train_path, f)) for f in os.listdir(y_train
 # width = x_train[0].shape[1]
 # height = x_train[0].shape[0]
 
-width = 1104
-height = 1712
+width = 896
+height = 896
 
 x_train = [cv2.resize(img, (height, width)) for img in x_train]
 y_train = [cv2.resize(img, (height, width)) for img in y_train]
@@ -96,7 +96,7 @@ autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
 autoencoder.fit(x_train, y_train,
                 validation_data = (x_test, y_test),
                 epochs=1000,
-                batch_size=16,
+                batch_size=32,
                 shuffle=True)
 
 #%%
