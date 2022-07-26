@@ -1,0 +1,3 @@
+*.txt
+data/
+AutoEncoder/*.h5
