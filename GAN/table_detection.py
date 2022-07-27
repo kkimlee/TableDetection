@@ -103,11 +103,11 @@ checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  generator=generator,
                                  discriminator=discriminator)
 #%% 훈련 루프 정의
-EPOCHS = 50
+EPOCHS = 100
 noise_dim = 100
 num_examples_to_generate = 16
 
-seed = tf.random.nermal([num_examples_to_generate, noise_dim])
+seed = tf.random.normal([num_examples_to_generate, noise_dim])
 
 #%% 학습을 위한 그래프 생성
 @tf.function
@@ -148,9 +148,26 @@ def train(dataset, epochs):
         print('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
     
     display.clear_output(wait=True)
-    generate_and_save_image(generator,
+    generate_and_save_images(generator,
                             epochs,
                             seed)
 
-#%% 이미지 생성 및 저
+#%% 이미지 생성 및 저장
+def generate_and_save_images(model, epoch, test_input):
+    predictions = model(test_input, training=False)
+    
+    fig = plt.figure(figsize=(4, 4))
+    
+    for i in range(predictions.shape[0]):
+        plt.subplot(4, 4, i+1)
+        plt.imshow(predictions[i, :, :, 0] * 127.5 + 127.6, cmap='gray')
+        plt.axis('off')
+        
+    plt.savefig('image_at_epoch_{:04d}.png'.format(epoch))
+    plt.show()
+
+#%% 모델 훈련
+train(train_dataset, EPOCHS)
+
+
         
