@@ -12,6 +12,7 @@ from tensorflow import keras
 
 import cv2
 import os
+
 #%% 데이터 불러오기
 data_path = '..\\data'
 train_path = os.path.join(data_path, 'train')
@@ -20,6 +21,10 @@ y_train_path = os.path.join(train_path, 'output')
 
 x_train = [cv2.imread(os.path.join(x_train_path, f)) for f in os.listdir(x_train_path)]
 y_train = [cv2.imread(os.path.join(y_train_path, f)) for f in os.listdir(y_train_path)]
+
+#%%
+plt.imshow(x_train[0])
+plt.axis('off')
 
 #%% 데이터 전처리
 # width = x_train[0].shape[1]
@@ -42,6 +47,13 @@ y_train = y_train[:-10]
 
 x_test = x_train[-10:]
 y_test = y_train[-10:]
+
+#%%
+plt.imshow(x_train[0])
+plt.axis('off')
+
+plt.imshow(y_train[0])
+plt.axis('off')
 #%% 데이터 시각화
 n = 5
 plt.figure(figsize=(20, 4))
@@ -94,13 +106,13 @@ autoencoder = Autoencoder()
 autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
 
 #%%
-keras.utils.plot_model(autoencoder.encoder)
-plt.show()
+# keras.utils.plot_model(autoencoder.encoder)
+# plt.show()
 #%% 모델 학습
-autoencoder.fit(x_train, y_train,
+history = autoencoder.fit(x_train, y_train,
                 validation_data = (x_test, y_test),
-                epochs=1000,
-                batch_size=32,
+                epochs=500,
+                batch_size=4,
                 shuffle=True)
 
 #%%
@@ -111,8 +123,8 @@ autoencoder.decoder.summary()
 
 
 #%%
-autoencoder.encoder.save('encoder.h5')
-autoencoder.decoder.save('decoder.h5')
+autoencoder.encoder.save('encoder3.h5')
+autoencoder.decoder.save('decoder3.h5')
 
 #%% 테스트 결과
 encoded_imgs = autoencoder.encoder(x_test).numpy()
@@ -138,8 +150,23 @@ for i in range(n):
 plt.show()
 
 #%%
-cv2.imshow('result', decoded_imgs[4])
-cv2.waitKey(0)
+num = 9
+plt.imshow(x_test[num])
+plt.axis('off')
+plt.show()
 
-cv2.imshow('result2', x_test[4])
-cv2.waitKey(0)
+plt.imshow(decoded_imgs[num])
+plt.axis('off')
+plt.show()
+
+#%%
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+plt.plot(loss)
+plt.plot(val_loss)
+plt.legend(['loss', 'val_loss'])
+plt.title('Loss')
+plt.xlabel('epochs')
+plt.ylabel('MSE')
+plt.show()
